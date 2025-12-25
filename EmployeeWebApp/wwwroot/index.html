@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Manager</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .employee-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        button { margin: 5px; padding: 8px 15px; }
+        input { margin: 5px; padding: 5px; }
+    </style>
+</head>
+<body>
+<h1>Employee manager</h1>
+
+<div id="add-employee">
+    <h2>Add new employee</h2>
+    <input type="text" id="name" placeholder="name">
+    <input type="text" id="lastName" placeholder="lastName">
+    <input type="text" id="personalNumber" placeholder="presonal number">
+    <input type="text" id="location" placeholder="location">
+    <input type="number" id="salary" placeholder="salary">
+    <button onclick="addEmployee()">ADD</button>
+</div>
+
+<div id="employees">
+    <h2>Employees</h2>
+    <button onclick="loadEmployees()">Load</button>
+    <div id="employee-list"></div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:5170/employees'; // შეცვალეთ თქვენი პორტით
+
+    async function loadEmployees() {
+        try {
+            const response = await fetch(`${API_URL}/get-employees`,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const employees = await response.json();
+
+            const listDiv = document.getElementById('employee-list');
+            listDiv.innerHTML = '';
+
+            employees.forEach(emp => {
+                const card = document.createElement('div');
+                card.className = 'employee-card';
+                card.innerHTML = `
+                        <strong>${emp.name}</strong> - ${emp.lastName}<br>
+                        Department: ${emp.location || 'N/A'}<br>
+                        Salary: ${emp.baseSalary} GEL
+                        <button onclick="deleteEmployee(${emp.idNumber})">Delete</button>
+                    `;
+                listDiv.appendChild(card);
+            });
+        } catch (error) {
+            alert('შეცდომა: ' + error.message);
+        }
+    }
+
+    async function addEmployee() {
+        const employee = {
+            name: document.getElementById('name').value,
+            lastName: document.getElementById('lastName').value,
+            idNumber: document.getElementById('personalNumber').value,
+            location: document.getElementById('location').value,
+            baseSalary: parseFloat(document.getElementById('salary').value)
+        };
+
+        try {
+            const response = await fetch(`${API_URL}/add-employee`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(employee)
+            });
+
+            if (response.ok) {
+                alert('Employee added!');
+                loadEmployees();
+            } else {
+                alert('Error!');
+            }
+        } catch (error) {
+            alert('Err: ' + error.message);
+        }
+    }
+
+    async function deleteEmployee(id) {
+        if (!confirm('U sure?')) return;
+
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Deleted!');
+                loadEmployees();
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+</script>
+</body>
+</html>
