@@ -1,4 +1,13 @@
+using EmployeeWebApp.Models;
+using EmployeeWebApp.Services;
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/logs.txt")
+    .CreateLogger();
 
 // Add services to the container.
 
@@ -7,6 +16,11 @@ builder.Services.AddControllers();
 //builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<IEmployeeStorage, EmployeeStorage>();
+
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 

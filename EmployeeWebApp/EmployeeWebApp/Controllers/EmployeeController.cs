@@ -10,92 +10,74 @@ namespace EmployeeWebApp.Controllers;
 [Route("employees")]
 public class EmployeeController : ControllerBase
 {
-    private const string FileUrl = "C:\\Apps\\Projects\\EmployeeWebApp\\EmployeeWebApp\\Data\\employees.txt";
+    private EmployeeService _service;
+
+    public EmployeeController(EmployeeService service)
+    {
+        _service = service;
+    }
+    
     // CREATE
     [HttpPost("add-employee")]
     public ActionResult AddNewEmployee(Employee employee)
     {
-        var textInformation = System.IO.File.ReadAllText(FileUrl);
-        var employeeList = JsonSerializer.Deserialize<List<Employee>>(textInformation);
-        if (employeeList == null)
+        try
         {
-            employeeList = new List<Employee>();
+            _service.AddNewEmployee(employee);
+            return Ok();
         }
-        if (employeeList.Any(x => x.IdNumber == employee.IdNumber))
+        catch (Exception ex)
         {
-            return Conflict();
+            switch (ex.Message)
+            {
+                case "Conflict":
+                    return Conflict(new {Title = "CustomError", Details = "Error Detials", Status = 409, Code = "EmployeeAlreadyExists"});
+                default:
+                    return BadRequest();
+            }
         }
-        employeeList.Add(employee);
-        
-        var serialized = JsonSerializer.Serialize(employeeList);
-        System.IO.File.WriteAllText(FileUrl, serialized);
-        return Ok();
     }
     
     // READ
     [HttpGet("get-employees")]
-    public List<Employee> GetEmployees()
+    public ActionResult GetEmployees()
     {
-        var textInformation = System.IO.File.ReadAllText(FileUrl);
-        var employeeList = JsonSerializer.Deserialize<List<Employee>>(textInformation);
-        return employeeList;
+        try
+        {
+            var employees = _service.GetEmployees();
+            return Ok(employees);
+        }
+        catch (Exception ex)
+        {
+            switch (ex.Message)
+            {
+                case "Conflict":
+                    return Conflict();
+                case "NotFound":
+                    return NotFound();
+                default:
+                    return BadRequest();
+            }
+        }
     }
 
     [HttpGet("get-employees/{idNumber}")]
     public ActionResult GetEmployeeByIdNumber(string idNumber)
     {
-        var textInformation = System.IO.File.ReadAllText(FileUrl);
-        var employeeList = JsonSerializer.Deserialize<List<Employee>>(textInformation);
-        if (employeeList == null)
-            return NotFound();
-        
-        var employee = employeeList.FirstOrDefault(x => x.IdNumber == idNumber);
-        return Ok(employee);
+       return Ok(_service.GetEmployeeByIdNumber(idNumber));
     }
 
     [HttpPost("calculate-salary/{idNumber}")]
     public ActionResult CalculateSalary(string idNumber)
     {
-        var employee = Storage.Employees.Where(x => x.IdNumber == idNumber).Select(x => new
-        {
-            Salary = x.Rate * x.WorkHours,
-            Name = x.Name
-        });
-        return Ok(employee);
+        return Ok(_service.CalculateSalary(idNumber));
     }
 
     // DELETE
     [HttpDelete("delete-employee/{idNumber}")]
     public ActionResult DeleteEmployee(string idNumber)
     {
-        var employeeToDelete = Storage.Employees.FirstOrDefault(x => x.IdNumber == idNumber);
-        if (employeeToDelete == null)
-        {
-            return NotFound();
-        }
-        
-        Storage.Employees.Remove(employeeToDelete);
-        return Ok();
-    }
-
-    // UPDATE
-    [HttpPut("update-employee")]
-    public ActionResult UpdateEmployee(Employee employee)
-    {
-        var textInformation = System.IO.File.ReadAllText(FileUrl);
-        var employeeList = JsonSerializer.Deserialize<List<Employee>>(textInformation);
-        if (employeeList == null)
-            return NotFound();
-
-        var existing = employeeList.FirstOrDefault(x => x.IdNumber == employee.IdNumber);
-        if (existing != null)
-            employeeList.Remove(existing);
-        else
-            return NotFound();
-
-        employeeList.Add(employee);
-        var serialized = JsonSerializer.Serialize(employeeList);
-        System.IO.File.WriteAllText(FileUrl, serialized);
+        _service.DeleteEmployee(idNumber);
         return Ok();
     }
 }
