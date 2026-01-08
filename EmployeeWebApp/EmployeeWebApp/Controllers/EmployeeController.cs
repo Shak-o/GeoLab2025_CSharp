@@ -11,10 +11,12 @@ namespace EmployeeWebApp.Controllers;
 public class EmployeeController : ControllerBase
 {
     private EmployeeService _service;
-
-    public EmployeeController(EmployeeService service)
+    private ILogger<EmployeeController> _logger;
+    
+    public EmployeeController(EmployeeService service, ILogger<EmployeeController> logger)
     {
         _service = service;
+        _logger = logger;
     }
     
     // CREATE
@@ -23,6 +25,8 @@ public class EmployeeController : ControllerBase
     {
         try
         {
+            _logger.LogDebug("Adding new employee with id {IdNumber}", employee.IdNumber);
+            _logger.LogDebug($"Adding new employee with id {employee.IdNumber}");
             _service.AddNewEmployee(employee);
             return Ok();
         }
@@ -31,7 +35,13 @@ public class EmployeeController : ControllerBase
             switch (ex.Message)
             {
                 case "Conflict":
-                    return Conflict(new {Title = "CustomError", Details = "Error Detials", Status = 409, Code = "EmployeeAlreadyExists"});
+                {
+                    _logger.LogWarning($"Employee with this id already exists {employee.IdNumber}");
+                    return Conflict(new
+                    {
+                        Title = "CustomError", Details = "Error Detials", Status = 409, Code = "EmployeeAlreadyExists"
+                    });
+                }
                 default:
                     return BadRequest();
             }
@@ -65,6 +75,12 @@ public class EmployeeController : ControllerBase
     public ActionResult GetEmployeeByIdNumber(string idNumber)
     {
        return Ok(_service.GetEmployeeByIdNumber(idNumber));
+    }
+
+    [HttpGet("id-numbers")]
+    public List<string> GetEmployeeIdNumbers()
+    {
+        return _service.GetEmployeeIdNumbers();
     }
 
     [HttpPost("calculate-salary/{idNumber}")]

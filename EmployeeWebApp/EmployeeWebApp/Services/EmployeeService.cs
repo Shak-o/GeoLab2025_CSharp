@@ -7,11 +7,18 @@ public class EmployeeService
 {
     private ILogger<EmployeeService> _logger;
     private IEmployeeStorage _employeeStorage;
+    private EmployeeCacheService _cacheService;
     
-    public EmployeeService(ILogger<EmployeeService> logger, IEmployeeStorage employeeStorage)
+    public EmployeeService(ILogger<EmployeeService> logger, IEmployeeStorage employeeStorage, EmployeeCacheService cacheService)
     {
+        _cacheService = cacheService;
         _logger = logger;
         _employeeStorage = employeeStorage;
+    }
+
+    public List<string> GetEmployeeIdNumbers()
+    {
+        return _cacheService.GetEmployeeIdNumbers();
     }
     
     public void AddNewEmployee(Employee employee)
@@ -24,6 +31,7 @@ public class EmployeeService
         }
         
         _employeeStorage.AddEmployee(employee);
+        _cacheService.AddIdNumber(employee.IdNumber);
     }
 
     public List<Employee> GetEmployees()
