@@ -11,10 +11,12 @@ namespace EmployeeWebApp.Controllers;
 public class EmployeeController : ControllerBase
 {
     private EmployeeService _service;
+    private ILogger<EmployeeController> _logger;
 
-    public EmployeeController(EmployeeService service)
+    public EmployeeController(EmployeeService service, ILogger<EmployeeController> logger)
     {
         _service = service;
+        _logger = logger;
     }
     
     // CREATE
@@ -23,6 +25,8 @@ public class EmployeeController : ControllerBase
     {
         try
         {
+            _logger.LogInformation($"Adding employee with IdNumber: {employee.IdNumber}");
+            _logger.LogInformation("Adding employee with IdNumber: {IdNumber}", employee.IdNumber);
             _service.AddNewEmployee(employee);
             return Ok();
         }

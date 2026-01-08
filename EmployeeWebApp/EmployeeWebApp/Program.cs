@@ -1,12 +1,16 @@
 using EmployeeWebApp.Models;
 using EmployeeWebApp.Services;
 using Serilog;
+using Serilog.Formatting.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
     .WriteTo.Console()
-    .WriteTo.File("Logs/logs.txt")
+    .WriteTo.File(new JsonFormatter(), "Logs/app-.json",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 7)
     .CreateLogger();
 
 // Add services to the container.
@@ -19,6 +23,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<IEmployeeStorage, EmployeeStorage>();
+builder.Services.AddTransient<TransientService>();
+builder.Services.AddScoped<ScopedService>();
+builder.Services.AddSingleton<SingletonService>();
 
 builder.Host.UseSerilog();
 

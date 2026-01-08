@@ -5,7 +5,7 @@ namespace EmployeeWebApp.Services;
 
 public class EmployeeStorage : IEmployeeStorage
 {
-    private const string FileUrl = "C:\\Apps\\Projects\\EmployeeWebApp\\EmployeeWebApp\\Data\\employees.txt";
+    private const string FileUrl = "Data/employees.txt";
 
     public void AddEmployee(Employee employee)
     {
