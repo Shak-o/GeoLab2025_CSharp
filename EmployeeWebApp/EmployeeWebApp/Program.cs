@@ -1,3 +1,4 @@
+using EmployeeWebApp.Middlewares;
 using EmployeeWebApp.Models;
 using EmployeeWebApp.Services;
 using Serilog;
@@ -21,14 +22,17 @@ builder.Services.AddScoped<IEmployeeStorage, EmployeeStorage>();
 
 builder.Host.UseSerilog();
 
+builder.Configuration.AddJsonFile("appsecrets.json");
+
 var app = builder.Build();
+
+app.UseMiddleware<BasicLogger>();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 // Do not use in PRODUCTION
 app.UseCors(policy =>

@@ -10,10 +10,12 @@ namespace EmployeeWebApp.Controllers;
 public class EmployeeController : ControllerBase
 {
     private EmployeeService _service;
-
-    public EmployeeController(EmployeeService service)
+    private IConfiguration _configuration;
+    
+    public EmployeeController(EmployeeService service, IConfiguration configuration)
     {
         _service = service;
+        _configuration = configuration;
     }
     
     // CREATE
@@ -100,5 +102,16 @@ public class EmployeeController : ControllerBase
             }
             return BadRequest();
         }
+    }
+    
+    [HttpPost("protected-endpoint")]
+    public ActionResult ProtectedEndpoint(string password)
+    {
+        var storedPassword = _configuration["VerySecurePassword"];
+        if (password != storedPassword)
+        {
+            return Unauthorized();
+        }
+        return Ok("You have accessed a protected endpoint.");
     }
 }
