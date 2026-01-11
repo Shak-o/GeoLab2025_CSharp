@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using EmployeeWebApp.Models;
+﻿using EmployeeWebApp.Models;
 using EmployeeWebApp.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -79,5 +78,27 @@ public class EmployeeController : ControllerBase
     {
         _service.DeleteEmployee(idNumber);
         return Ok();
+    }
+    
+    [HttpPost("set-leave")]
+    public ActionResult SetLeave(string idNumber, int leaves)
+    {
+        try
+        {
+            _service.TakeLeave(idNumber, leaves);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message == "NotFound")
+            {
+                return NotFound();
+            }
+            if (ex.Message == "ValidationError")
+            {
+                return BadRequest(new {Title = "ValidationError", Details = "Exceeds available leave days", Status = 400, Code = "LeaveDaysExceeded"});
+            }
+            return BadRequest();
+        }
     }
 }

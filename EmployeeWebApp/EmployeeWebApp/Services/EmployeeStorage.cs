@@ -5,7 +5,7 @@ namespace EmployeeWebApp.Services;
 
 public class EmployeeStorage : IEmployeeStorage
 {
-    private const string FileUrl = "C:\\Apps\\Projects\\EmployeeWebApp\\EmployeeWebApp\\Data\\employees.txt";
+    private const string FileUrl = "Data/employees.txt";
 
     public void AddEmployee(Employee employee)
     {
@@ -25,18 +25,23 @@ public class EmployeeStorage : IEmployeeStorage
     public void UpdateEmployee(Employee employee)
     {
         var textInformation = File.ReadAllText(FileUrl);
-        var employeeList = JsonSerializer.Deserialize<List<Employee>>(textInformation);
-        employeeList.Remove(employee);
-
+        var employeeList = JsonSerializer.Deserialize<List<Employee>>(textInformation) ?? new List<Employee>();
+        
         if (employeeList.Any(x => x.IdNumber == employee.IdNumber))
         {
-            employee.IdNumber = employee.IdNumber;
-            employee.Name = employee.Name;
-            employee.LastName = employee.LastName;
-            // ...
+            var existing = employeeList.First(x => x.IdNumber == employee.IdNumber);
+            existing.IdNumber = employee.IdNumber;
+            existing.Name = employee.Name;
+            existing.LastName = employee.LastName;
+            existing.Age = employee.Age;
+            existing.Location = employee.Location;
+            existing.LeavesTaken = employee.LeavesTaken;
+            existing.Rate = employee.Rate;
+            existing.WorkHours = employee.WorkHours;
         }
+        else
+            employeeList.Add(employee);
         
-        employeeList.Add(employee);
         var serialized = JsonSerializer.Serialize(employeeList);
         File.WriteAllText(FileUrl, serialized);
     }

@@ -7,11 +7,13 @@ public class EmployeeService
 {
     private ILogger<EmployeeService> _logger;
     private IEmployeeStorage _employeeStorage;
+    private IConfiguration _configuration;
     
-    public EmployeeService(ILogger<EmployeeService> logger, IEmployeeStorage employeeStorage)
+    public EmployeeService(ILogger<EmployeeService> logger, IEmployeeStorage employeeStorage, IConfiguration configuration)
     {
         _logger = logger;
         _employeeStorage = employeeStorage;
+        _configuration = configuration;
     }
     
     public void AddNewEmployee(Employee employee)
@@ -47,6 +49,24 @@ public class EmployeeService
         var employee = GetEmployeeByIdNumber(employeeId);
         var salary = employee.Rate * employee.WorkHours;
         return salary;
+    }
+    
+    public void TakeLeave(string id, int days)
+    {
+        var employee = GetEmployeeByIdNumber(id);
+        if (employee == null)
+        {
+            throw new Exception("NotFound");
+        }
+
+        var maxDays = _configuration["EmployeeDefaultAvaialableLeaveDays"];
+        if (employee.LeavesTaken + days > int.Parse(maxDays))
+        {
+            throw new Exception("ValidationError");
+        }
+        
+        employee.LeavesTaken += days;
+        _employeeStorage.UpdateEmployee(employee);
     }
 
     public void DeleteEmployee(string id)
