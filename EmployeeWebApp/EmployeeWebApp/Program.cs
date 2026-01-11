@@ -5,8 +5,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .WriteTo.File("Logs/logs.txt")
+    .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
 
 // Add services to the container.

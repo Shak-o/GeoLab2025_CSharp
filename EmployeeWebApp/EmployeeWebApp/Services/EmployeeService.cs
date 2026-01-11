@@ -59,7 +59,7 @@ public class EmployeeService
             throw new Exception("NotFound");
         }
 
-        var maxDays = _configuration["EmployeeDefaultAvaialableLeaveDays"];
+        var maxDays = _configuration.GetSection("LeaveConfiguration")["MaxPaidLeavePerYear"];
         if (employee.LeavesTaken + days > int.Parse(maxDays))
         {
             throw new Exception("ValidationError");
