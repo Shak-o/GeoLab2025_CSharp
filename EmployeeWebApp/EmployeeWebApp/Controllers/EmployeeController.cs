@@ -12,11 +12,13 @@ public class EmployeeController : ControllerBase
 {
     private EmployeeService _service;
     private ILogger<EmployeeController> _logger;
+    private readonly IConfiguration _configuration;
     
-    public EmployeeController(EmployeeService service, ILogger<EmployeeController> logger)
+    public EmployeeController(EmployeeService service, ILogger<EmployeeController> logger, IConfiguration configuration)
     {
         _service = service;
         _logger = logger;
+        _configuration = configuration;
     }
     
     // CREATE
@@ -95,5 +97,17 @@ public class EmployeeController : ControllerBase
     {
         _service.DeleteEmployee(idNumber);
         return Ok();
+    }
+
+    [HttpPost("secured-endpoint")]
+    public ActionResult SecuredEndpoint(string userPassword)
+    {
+        var storedPassword = _configuration["Password"];
+        if (userPassword != storedPassword)
+        {
+            return Unauthorized();
+        }
+
+        return Ok("You gained access to secured endpoint");
     }
 }

@@ -5,11 +5,16 @@ namespace EmployeeWebApp.Services;
 
 public class EmployeeStorage : IEmployeeStorage
 {
-    private const string FileUrl = "C:\\Apps\\Projects\\EmployeeWebApp\\EmployeeWebApp\\Data\\employees.txt";
+    private string _fileUrl;
+
+    public EmployeeStorage(IConfiguration configuration)
+    {
+        _fileUrl = configuration.GetValue<string>("FileUrl") ?? throw new Exception("FileUrl not found");
+    }
 
     public void AddEmployee(Employee employee)
     {
-        var textInformation = File.ReadAllText(FileUrl);
+        var textInformation = File.ReadAllText(_fileUrl);
         var employeeList = JsonSerializer.Deserialize<List<Employee>>(textInformation);
         if (employeeList == null)
         {
@@ -19,12 +24,12 @@ public class EmployeeStorage : IEmployeeStorage
         employeeList.Add(employee);
         
         var serialized = JsonSerializer.Serialize(employeeList);
-        File.WriteAllText(FileUrl, serialized);
+        File.WriteAllText(_fileUrl, serialized);
     }
 
     public void UpdateEmployee(Employee employee)
     {
-        var textInformation = File.ReadAllText(FileUrl);
+        var textInformation = File.ReadAllText(_fileUrl);
         var employeeList = JsonSerializer.Deserialize<List<Employee>>(textInformation);
         employeeList.Remove(employee);
 
@@ -38,19 +43,19 @@ public class EmployeeStorage : IEmployeeStorage
         
         employeeList.Add(employee);
         var serialized = JsonSerializer.Serialize(employeeList);
-        File.WriteAllText(FileUrl, serialized);
+        File.WriteAllText(_fileUrl, serialized);
     }
 
     public List<Employee> GetEmployees()
     {
-        var textInformation = File.ReadAllText(FileUrl);
+        var textInformation = File.ReadAllText(_fileUrl);
         var employeeList = JsonSerializer.Deserialize<List<Employee>>(textInformation);
         return employeeList;
     }
 
     public Employee GetEmployee(string idNumber)
     {
-        var textInformation = File.ReadAllText(FileUrl);
+        var textInformation = File.ReadAllText(_fileUrl);
         var employeeList = JsonSerializer.Deserialize<List<Employee>>(textInformation);
         return employeeList.FirstOrDefault(x => x.IdNumber == idNumber);
     }
