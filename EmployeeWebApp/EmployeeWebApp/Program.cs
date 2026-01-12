@@ -1,4 +1,6 @@
+using EmployeeWebApp.MiddleWares;
 using EmployeeWebApp.Models;
+using EmployeeWebApp.Options;
 using EmployeeWebApp.Services;
 using Serilog;
 using Serilog.Formatting.Json;
@@ -31,6 +33,9 @@ builder.Services.AddScoped<TestScopedService>();
 builder.Services.AddTransient<TestTransientService>();
 builder.Services.AddSingleton<TestSingletonService>();
 
+builder.Configuration.AddJsonFile("appsecrets.json");
+
+builder.Services.Configure<EmployeeOptions>(builder.Configuration.GetSection("EmployeeOption"));
 
 builder.Host.UseSerilog();
 
@@ -41,6 +46,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<LoggingMiddleware>();
 
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())
