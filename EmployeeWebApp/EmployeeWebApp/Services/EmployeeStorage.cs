@@ -12,9 +12,9 @@ public class EmployeeStorage : IEmployeeStorage
         _fileUrl = configuration.GetValue<string>("FileUrl") ?? throw new Exception("FileUrl not found");
     }
 
-    public void AddEmployee(Employee employee)
+    public async Task AddEmployeeAsync(Employee employee)
     {
-        var textInformation = File.ReadAllText(_fileUrl);
+        var textInformation = await File.ReadAllTextAsync(_fileUrl);
         var employeeList = JsonSerializer.Deserialize<List<Employee>>(textInformation);
         if (employeeList == null)
         {
@@ -24,7 +24,7 @@ public class EmployeeStorage : IEmployeeStorage
         employeeList.Add(employee);
         
         var serialized = JsonSerializer.Serialize(employeeList);
-        File.WriteAllText(_fileUrl, serialized);
+        await File.WriteAllTextAsync(_fileUrl, serialized);
     }
 
     public void UpdateEmployee(Employee employee)

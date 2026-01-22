@@ -26,7 +26,7 @@ public class EmployeeService
         return _cacheService.GetEmployeeIdNumbers();
     }
 
-    public void AddNewEmployee(Employee employee)
+    public async Task AddNewEmployeeAsync(Employee employee)
     {
         var minAge = _options.Value.EmployeeMinAge;
         var maxAge = _options.Value.EmployeeMaxAge;
@@ -49,7 +49,7 @@ public class EmployeeService
             throw new Exception("Conflict");
         }
 
-        _employeeStorage.AddEmployee(employee);
+        await _employeeStorage.AddEmployeeAsync(employee);
         _cacheService.AddIdNumber(employee.IdNumber);
     }
 

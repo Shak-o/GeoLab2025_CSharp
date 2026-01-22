@@ -23,13 +23,13 @@ public class EmployeeController : ControllerBase
     
     // CREATE
     [HttpPost("add-employee")]
-    public ActionResult AddNewEmployee(Employee employee)
+    public async Task<ActionResult> AddNewEmployee(Employee employee)
     {
         try
         {
             _logger.LogDebug("Adding new employee with id {IdNumber}", employee.IdNumber);
             _logger.LogDebug($"Adding new employee with id {employee.IdNumber}");
-            _service.AddNewEmployee(employee);
+            await _service.AddNewEmployeeAsync(employee);
             return Ok();
         }
         catch (Exception ex)
