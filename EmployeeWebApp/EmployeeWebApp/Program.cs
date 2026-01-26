@@ -41,13 +41,17 @@ builder.Host.UseSerilog();
 
 var app = builder.Build();
 
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+app.UseMiddleware<LoggingMiddleware>();
+//app.UseMiddleware<SimpleAuthMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<LoggingMiddleware>();
+
 
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())

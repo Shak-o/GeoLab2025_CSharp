@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using EmployeeWebApp.Exceptions;
 using EmployeeWebApp.Models;
 using EmployeeWebApp.Options;
 using Microsoft.Extensions.Options;
@@ -40,13 +41,13 @@ public class EmployeeService
         
         if (employee.Age < minAge || employee.Age > maxAge)
         {
-            throw new Exception("ValidationError invalid age");
+            throw new ApiException("ValidationError", "ValidationProblem", 400, "User age is inappropriate", "/employee");
         }
         var employeeList = _employeeStorage.GetEmployees();
         if (employeeList.Any(x => x.IdNumber == employee.IdNumber))
         {
             _logger.LogWarning($"Employee with IdNumber {employee.IdNumber} already exists");
-            throw new Exception("Conflict");
+            throw new ApiException("Conflict", "Conflict", 409, "User with same id number already exists", "/employees");
         }
 
         await _employeeStorage.AddEmployeeAsync(employee);
@@ -67,6 +68,8 @@ public class EmployeeService
     public Employee? GetEmployeeByIdNumber(string idNumber)
     {
         var employee = _employeeStorage.GetEmployee(idNumber);
+        if (employee == null)
+            throw new Exception("NotFound");
         return employee;
     }
 
@@ -79,7 +82,7 @@ public class EmployeeService
 
     public void DeleteEmployee(string id)
     {
-        // copy paste from controller
+        throw new NotImplementedException();
     }
 
     public void UpdateEmployee(string id)
