@@ -13,43 +13,23 @@ public class EmployeeController : ControllerBase
     private EmployeeService _service;
     private ILogger<EmployeeController> _logger;
     private readonly IConfiguration _configuration;
-    
+
     public EmployeeController(EmployeeService service, ILogger<EmployeeController> logger, IConfiguration configuration)
     {
         _service = service;
         _logger = logger;
         _configuration = configuration;
     }
-    
+
     // CREATE
     [HttpPost("add-employee")]
-    public async Task<ActionResult> AddNewEmployee(Employee employee)
+    public async Task AddNewEmployee(Employee employee)
     {
-        try
-        {
-            _logger.LogDebug("Adding new employee with id {IdNumber}", employee.IdNumber);
-            _logger.LogDebug($"Adding new employee with id {employee.IdNumber}");
-            await _service.AddNewEmployeeAsync(employee);
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            switch (ex.Message)
-            {
-                case "Conflict":
-                {
-                    _logger.LogWarning($"Employee with this id already exists {employee.IdNumber}");
-                    return Conflict(new
-                    {
-                        Title = "CustomError", Details = "Error Detials", Status = 409, Code = "EmployeeAlreadyExists"
-                    });
-                }
-                default:
-                    return BadRequest();
-            }
-        }
+        _logger.LogDebug("Adding new employee with id {IdNumber}", employee.IdNumber);
+        _logger.LogDebug($"Adding new employee with id {employee.IdNumber}");
+        await _service.AddNewEmployeeAsync(employee);
     }
-    
+
     // READ
     [HttpGet("get-employees")]
     public ActionResult GetEmployees()
@@ -76,7 +56,7 @@ public class EmployeeController : ControllerBase
     [HttpGet("get-employees/{idNumber}")]
     public ActionResult GetEmployeeByIdNumber(string idNumber)
     {
-       return Ok(_service.GetEmployeeByIdNumber(idNumber));
+        return Ok(_service.GetEmployeeByIdNumber(idNumber));
     }
 
     [HttpGet("id-numbers")]
