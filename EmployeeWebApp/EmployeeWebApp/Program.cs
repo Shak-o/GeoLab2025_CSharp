@@ -1,7 +1,9 @@
+using EmployeeWebApp.Infrastructure;
 using EmployeeWebApp.MiddleWares;
 using EmployeeWebApp.Models;
 using EmployeeWebApp.Options;
 using EmployeeWebApp.Services;
+using RestEase.HttpClientFactory;
 using Serilog;
 using Serilog.Formatting.Json;
 
@@ -15,6 +17,8 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 // Add services to the container.
+builder.Services.AddHttpClient();
+builder.Services.AddRestEaseClient<IOpenWeatherMapApi>("http://api.openweathermap.org");
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
