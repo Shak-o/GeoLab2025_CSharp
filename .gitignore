@@ -1,5 +1,5 @@
-/.idea
 **/bin
 **/obj
 *log*.txt
 *DotSettings*
+.idea

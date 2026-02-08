@@ -2,7 +2,9 @@ using EmployeeWebApp.Infrastructure;
 using EmployeeWebApp.MiddleWares;
 using EmployeeWebApp.Models;
 using EmployeeWebApp.Options;
+using EmployeeWebApp.Persistance;
 using EmployeeWebApp.Services;
+using Microsoft.EntityFrameworkCore;
 using RestEase.HttpClientFactory;
 using Serilog;
 using Serilog.Formatting.Json;
@@ -27,7 +29,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<EmployeeService>();
-builder.Services.AddTransient<IEmployeeStorage, EmployeeStorage>();
 builder.Services.AddSingleton<EmployeeCacheService>();
 
 // Scoped - ერთხელ იქმნება რექვესთის scope ის განმავლობაში
@@ -38,8 +39,12 @@ builder.Services.AddTransient<TestTransientService>();
 builder.Services.AddSingleton<TestSingletonService>();
 
 builder.Configuration.AddJsonFile("appsecrets.json");
-
 builder.Services.Configure<EmployeeOptions>(builder.Configuration.GetSection("EmployeeOption"));
+
+
+builder.Services.AddTransient<IEmployeeStorage, EmployeeStorage>();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Host.UseSerilog();
 
