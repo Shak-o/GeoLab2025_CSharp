@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using System.Text.Json;
 using EmployeeWebApp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,19 +41,19 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet("real-weather")]
-    public async Task<string> GetRealWeatherAsync()
+    public async Task<object> GetRealWeatherAsync()
     {
         try
         {
-            var location = await _openWeatherMapApi.GetLocationAsync("Tbilisi,GE-TB,+995", 1, "xx");
+            var location = await _openWeatherMapApi.GetLocationAsync("Tbilisi,GE-TB,+995", 1, "7aaa81dbe48a19a79a1aaa68253217b7");
 
             var weatherResponse = await _openWeatherMapApi.GetWeatherForecast(
                 location[0].Lat.ToString(CultureInfo.InvariantCulture),
                 location[0].Lon.ToString(CultureInfo.InvariantCulture),
-                "xx");
+                "7aaa81dbe48a19a79a1aaa68253217b7");
             var weatherContent = await weatherResponse.Content.ReadAsStringAsync();
-            Response.ContentType = "application/json";
-            return weatherContent;
+            var deserialized = JsonSerializer.Deserialize<object>(weatherContent);
+            return deserialized;
         }
         catch (Exception ex)
         {
