@@ -5,7 +5,7 @@ namespace EmployeeWebApp.Services;
 public interface IEmployeeStorage
 {
     Task AddEmployeeAsync(Employee employee);
-    void UpdateEmployee(Employee employee);
-    List<Employee> GetEmployees();
-    Employee GetEmployee(string idNumber);
+    Task UpdateEmployee(Employee employee);
+    Task<List<Employee>> GetEmployees();
+    Task<Employee> GetEmployee(string idNumber);
 }

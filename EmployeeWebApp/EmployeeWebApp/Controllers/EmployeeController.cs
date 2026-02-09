@@ -32,11 +32,11 @@ public class EmployeeController : ControllerBase
 
     // READ
     [HttpGet("get-employees")]
-    public ActionResult GetEmployees()
+    public async Task<ActionResult> GetEmployees()
     {
         try
         {
-            var employees = _service.GetEmployees();
+            var employees = await _service.GetEmployees();
             return Ok(employees);
         }
         catch (Exception ex)
@@ -54,21 +54,15 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpGet("get-employees/{idNumber}")]
-    public ActionResult GetEmployeeByIdNumber(string idNumber)
+    public async Task<ActionResult> GetEmployeeByIdNumber(string idNumber)
     {
-        return Ok(_service.GetEmployeeByIdNumber(idNumber));
+        return Ok(await _service.GetEmployeeByIdNumber(idNumber));
     }
 
     [HttpGet("id-numbers")]
     public List<string> GetEmployeeIdNumbers()
     {
         return _service.GetEmployeeIdNumbers();
-    }
-
-    [HttpPost("calculate-salary/{idNumber}")]
-    public ActionResult CalculateSalary(string idNumber)
-    {
-        return Ok(_service.CalculateSalary(idNumber));
     }
 
     // DELETE

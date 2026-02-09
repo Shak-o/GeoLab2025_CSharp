@@ -43,7 +43,7 @@ public class EmployeeService
         {
             throw new ApiException("ValidationError", "ValidationProblem", 400, "User age is inappropriate", "/employee");
         }
-        var employeeList = _employeeStorage.GetEmployees();
+        var employeeList = await _employeeStorage.GetEmployees();
         if (employeeList.Any(x => x.IdNumber == employee.IdNumber))
         {
             _logger.LogWarning($"Employee with IdNumber {employee.IdNumber} already exists");
@@ -54,9 +54,9 @@ public class EmployeeService
         _cacheService.AddIdNumber(employee.IdNumber);
     }
 
-    public List<Employee> GetEmployees()
+    public async Task<List<Employee>> GetEmployees()
     {
-        var employeeList = _employeeStorage.GetEmployees();
+        var employeeList = await _employeeStorage.GetEmployees();
         if (employeeList == null)
         {
             throw new Exception("NotFound");
@@ -65,20 +65,14 @@ public class EmployeeService
         return employeeList;
     }
 
-    public Employee? GetEmployeeByIdNumber(string idNumber)
+    public async Task<Employee?> GetEmployeeByIdNumber(string idNumber)
     {
-        var employee = _employeeStorage.GetEmployee(idNumber);
+        var employee = await _employeeStorage.GetEmployee(idNumber);
         if (employee == null)
             throw new Exception("NotFound");
         return employee;
     }
-
-    public decimal CalculateSalary(string employeeId)
-    {
-        var employee = GetEmployeeByIdNumber(employeeId);
-        var salary = employee.Rate * employee.WorkHours;
-        return salary;
-    }
+    
 
     public void DeleteEmployee(string id)
     {
