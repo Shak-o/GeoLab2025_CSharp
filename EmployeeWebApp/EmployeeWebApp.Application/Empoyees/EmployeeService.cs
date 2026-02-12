@@ -1,20 +1,20 @@
-﻿using System.Text.Json;
-using EmployeeWebApp.Exceptions;
-using EmployeeWebApp.Models;
-using EmployeeWebApp.Options;
+﻿using EmployeeWebApp.Application.Exceptions;
+using EmployeeWebApp.Application.Options;
+using EmployeeWebApp.Domain.Entities;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace EmployeeWebApp.Services;
+namespace EmployeeWebApp.Application.Empoyees;
 
 public class EmployeeService
 {
     private ILogger<EmployeeService> _logger;
     private IEmployeeStorage _employeeStorage;
-    private EmployeeCacheService _cacheService;
+    private IEmployeeCacheService _cacheService;
     private IOptions<EmployeeOptions> _options;
 
     public EmployeeService(ILogger<EmployeeService> logger, IEmployeeStorage employeeStorage,
-        EmployeeCacheService cacheService,  IOptions<EmployeeOptions> options)
+        IEmployeeCacheService cacheService,  IOptions<EmployeeOptions> options)
     {
         _cacheService = cacheService;
         _options = options;

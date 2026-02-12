@@ -1,8 +1,9 @@
+using EmployeeWebApp.Application;
+using EmployeeWebApp.Application.Empoyees;
+using EmployeeWebApp.Application.Options;
 using EmployeeWebApp.Infrastructure;
 using EmployeeWebApp.MiddleWares;
-using EmployeeWebApp.Models;
-using EmployeeWebApp.Options;
-using EmployeeWebApp.Persistance;
+using EmployeeWebApp.Persistance.Persistance;
 using EmployeeWebApp.Services;
 using Microsoft.EntityFrameworkCore;
 using RestEase.HttpClientFactory;

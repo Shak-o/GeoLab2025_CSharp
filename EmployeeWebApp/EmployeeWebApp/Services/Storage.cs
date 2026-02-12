@@ -1,4 +1,5 @@
-﻿using EmployeeWebApp.Models;
+﻿using EmployeeWebApp.Domain.Entities;
+using EmployeeWebApp.Models;
 
 namespace EmployeeWebApp.Services;
 

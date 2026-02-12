@@ -1,4 +1,4 @@
-﻿namespace EmployeeWebApp.Services;
+﻿namespace EmployeeWebApp.Infrastructure;
 
 public class EmployeeCacheService
 {

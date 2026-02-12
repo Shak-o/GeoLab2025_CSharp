@@ -1,18 +1,15 @@
-﻿using EmployeeWebApp.Models;
-using EmployeeWebApp.Services;
-using Microsoft.Data.SqlClient;
+﻿using EmployeeWebApp.Application;
+using EmployeeWebApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmployeeWebApp.Persistance;
+namespace EmployeeWebApp.Persistance.Persistance;
 
 public class EmployeeDbStorage : IEmployeeStorage
 {
-    private readonly IConfiguration _configuration;
     private readonly EmployeeDbContext _dbContext;
     
-    public EmployeeDbStorage(IConfiguration configuration, EmployeeDbContext dbContext)
+    public EmployeeDbStorage(EmployeeDbContext dbContext)
     {
-        _configuration = configuration;
         _dbContext = dbContext;
     }
     
@@ -91,7 +88,11 @@ public class EmployeeDbStorage : IEmployeeStorage
 
     public async Task<Employee> GetEmployee(string idNumber)
     {
-        var result = await _dbContext.Employees.FirstOrDefaultAsync(x => x.IdNumber == idNumber);
+        var result = await _dbContext.Employees
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.IdNumber == idNumber);
         return result;
     }
+    
+    
 }

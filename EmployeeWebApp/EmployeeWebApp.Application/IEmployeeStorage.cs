@@ -1,6 +1,6 @@
-﻿using EmployeeWebApp.Models;
+﻿using EmployeeWebApp.Domain.Entities;
 
-namespace EmployeeWebApp.Services;
+namespace EmployeeWebApp.Application;
 
 public interface IEmployeeStorage
 {

@@ -1,7 +1,7 @@
-﻿using EmployeeWebApp.Models;
+﻿using EmployeeWebApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmployeeWebApp.Persistance;
+namespace EmployeeWebApp.Persistance.Persistance;
 
 public class EmployeeDbContext : DbContext // baza - EmployeeManagerDb
 {

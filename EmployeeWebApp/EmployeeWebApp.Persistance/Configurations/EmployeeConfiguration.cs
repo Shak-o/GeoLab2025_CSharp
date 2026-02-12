@@ -1,4 +1,4 @@
-﻿using EmployeeWebApp.Models;
+﻿using EmployeeWebApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

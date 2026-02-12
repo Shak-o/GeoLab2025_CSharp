@@ -1,4 +1,4 @@
-﻿namespace EmployeeWebApp.Models;
+﻿namespace EmployeeWebApp.Domain.Entities;
 
 public class Employee
 {

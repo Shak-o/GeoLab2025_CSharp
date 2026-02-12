@@ -1,4 +1,4 @@
-﻿namespace EmployeeWebApp.Options;
+﻿namespace EmployeeWebApp.Application.Options;
 
 public class EmployeeOptions
 {

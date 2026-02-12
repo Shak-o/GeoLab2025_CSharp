@@ -1,4 +1,4 @@
-﻿namespace EmployeeWebApp.Exceptions;
+﻿namespace EmployeeWebApp.Application.Exceptions;
 
 public class ApiException : Exception
 {

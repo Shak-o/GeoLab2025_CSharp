@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using EmployeeWebApp.Exceptions;
+using EmployeeWebApp.Application.Exceptions;
 using EmployeeWebApp.Models;
 
 namespace EmployeeWebApp.MiddleWares;
